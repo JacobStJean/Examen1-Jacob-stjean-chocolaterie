@@ -40,8 +40,13 @@ namespace ChocolaterieDeWilly.Models
         private int _quantiteInvendue;
         public int QuantiteInvendue
         {
-            get { return _quantiteInvendue; }
-            set  { _quantiteInvendue = value; }
+            get {if (_quantiteInvendue < 0 || _quantiteInvendue > Creation.Quantite)
+                {
+                    throw new ArgumentException("La valeur ne peut pas etre negative ou plus haute que la quantite de chocolat creer.");
+                }
+                else { return _quantiteInvendue; }
+                }
+                set  { _quantiteInvendue = value; }
         }
 
 
@@ -52,6 +57,18 @@ namespace ChocolaterieDeWilly.Models
             DateLimite = dateLimite;
             Statut = StatutLot.Planifie;
             Creation = new Creation(nom, quantite, poidsUnitaire);
+        }
+
+        public LotProduction(Creation creation, DateTime dateLimite)
+        {
+            Creation = creation;
+            DateLimite = dateLimite;
+        }
+
+        public LotProduction(int prochainNumeroLot, Creation creation, DateTime dateLimite)
+        {
+            Creation = creation;
+            DateLimite = dateLimite;
         }
 
         /// <summary>

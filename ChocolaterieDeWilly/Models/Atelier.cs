@@ -1,5 +1,6 @@
 ﻿using ChocolaterieDeWilly.Enumerations;
 using ChocolaterieDeWilly.ExceptionsPersonnalisees;
+using System.ComponentModel;
 
 namespace ChocolaterieDeWilly.Models
 {
@@ -85,6 +86,11 @@ namespace ChocolaterieDeWilly.Models
         /// <param name="dateLimite">La date avant laquelle le lot doit être fabriqué.</param>
         public void PlanifierLot(string nom, int quantite, Masse poidsUnitaire, DateTime dateLimite)
         {
+            var creation = new Creation(nom, quantite, poidsUnitaire);
+            var lot = new LotProduction(creation, dateLimite);
+            ValiderLot(lot);
+            Lots.Add(lot);
+            _prochainNumeroLot++;
 
         }
 
@@ -114,6 +120,7 @@ namespace ChocolaterieDeWilly.Models
             }
 
             Masse chocolatRequis = lot.Creation.CalculerChocolatRequis();
+
 
             if (chocolatRequis.EnGrammes() > ReserveChocolat.EnGrammes())
             {
@@ -219,8 +226,13 @@ namespace ChocolaterieDeWilly.Models
 
             Masse requisConverti = chocolatRequis.ConvertirEn(ReserveChocolat.Unite);
             ReserveChocolat = new Masse(ReserveChocolat.Valeur - requisConverti.Valeur, ReserveChocolat.Unite);
-
+            StatusLot = StatutLot.Termine;
             CacherTickets(lot);
+        }
+
+        private void CacherTickets(LotProduction lot)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -301,8 +313,21 @@ namespace ChocolaterieDeWilly.Models
         /// Cache les tickets d'or dans un lot qui vient d'être terminé.
         /// </summary>
         /// <param name="lot">Le lot qui vient d'être terminé.</param>
-        private void CacherTickets(LotProduction lot)
+        private void CacherTickets(LotProduction lot, int choixticketor)
         {
+            _compteurUnites += lot.Creation.Quantite;
+            choixticketor = _compteurUnites % 500;
+            if (TicketsCaches >= MaxTicketsOr)
+            {
+
+            }
+            else
+            {
+                 TicketOr = choixticketor;
+
+            }
+            
+
         }
     }
 }
